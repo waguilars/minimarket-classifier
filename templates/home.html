@@ -1,0 +1,55 @@
+{% extends "base.html" %} {% block content %}
+<img class="img-fluid" src="/static/img/minimarket.jpeg" alt="" />
+
+<div class="container">
+  <h2 class="text-center py-2">Categorias</h2>
+  <div class="categories">
+    <a href="/category/Dairy-&-Bakery" class="category">
+      <img class="img-fluid logo" src="/static/img/category/bread.png" alt="" />
+      <h3>Dairy & Bakery</h3>
+    </a>
+    <a href="/category/Snacks-&-Branded-Foods" class="category">
+      <img class="img-fluid logo" src="/static/img/category/snack.png" alt="" />
+      <h3>Snacks & Branded</h3>
+    </a>
+    <a href="/Staples" class="category">
+      <img class="img-fluid logo" src="/static/img/category/diet.png" alt="" />
+      <h3>Staples</h3>
+    </a>
+  </div>
+  <h2 class="text-center py-2">productos</h2>
+  <div class="row mb-5">
+    {% for prod in prods %}
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">{{prod['PRODUCT NAME']}}</h4>
+          <p class="card-text text-end">
+            Precio: $ {{prod['PRICE']}}
+          </p>
+          <img
+            class="img-fluid"
+            src={{prod['IMAGE URL']}}
+            alt=""
+          />
+          <div class="my-2">
+            <span class="badge bg-primary">{{prod['CATEGORY']}} </span>
+            <span class="badge bg-secondary">{{prod['SUB CATEGORY']}}</span>
+          </div>
+          <div class="text-center">
+            <a href="#" class="btn btn-sm btn-primary">Ver más</a>
+            <a href="#" class="btn btn-sm btn-primary">
+              <i class="fa fa-plus"></i>
+              Agregar
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- make a bootstrap jumbotron -->
+
+{% endblock %}
