@@ -7,7 +7,7 @@ from controllers.users import User
 import sqlite3
 import os
 
-from forms import LoginForm
+from forms import LoginForm, RegisterForm
 
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
@@ -82,6 +82,17 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/registro')
+@app.route('/registro', methods=['POST', 'GET'])
 def registro():
-    return render_template('auth/registro.html')
+    form = RegisterForm(request.form)
+    if form.validate_on_submit():
+        conn = sqlite3.connect('app.db')
+        curs = conn.cursor()
+        new_user = (form.names.data, form.email.data, form.password1.data)
+        curs.execute("insert into users(names, email, password) values(?,?,?);", new_user)
+        conn.commit()
+        flash('Usuario registrado correctamente')
+        return redirect(url_for('login'))
+
+
+    return render_template('auth/registro.html', form=form)

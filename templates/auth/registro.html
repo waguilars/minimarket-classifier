@@ -2,47 +2,35 @@
 
 <div class="container-fluid mx-auto row justify-content-center">
   <div class="col-md-6">
+    {% for field, errors in form.errors.items() %}
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+      <i class="fa fa-info me-2"></i>
+        {{ ', '.join(errors) }}
+    </div>
+    {% endfor %}
 
     <h2 class="text-center mt-3">Registro de usuario</h2>
-    <form class="px-5">
+    <form method="POST" action="" class="px-5">
+      {{ form.hidden_tag() }}
       <div class="form-group">
-        <label for="name" class="col-sm-2 col-form-label">Nombres</label>
-        <div class="">
-          <input
-            type="text"
-            class="form-control"
-            id="name"
-            placeholder="Pepito Perez"
-          />
-        </div>
+        {{ form.names.label(class="col-sm-2 col-form-label")}}
+        {{ form.names(class="form-control")}}
       </div>
       <div class="form-group">
-        <label for="email" class="col-sm-2 col-form-label">Email</label>
-        <div class="">
-          <input
-            type="email"
-            class="form-control"
-            id="email"
-            placeholder="email@example.com"
-          />
-        </div>
+        {{ form.email.label(class="col-sm-2 col-form-label") }}
+        {{ form.email(class="form-control") }}
       </div>
       <div class="form-group">
-        <label for="password1" class="col-sm-2 col-form-label">Contraseña</label>
-        <div class="">
-          <input type="password" class="form-control" id="password1" />
-        </div>
+        {{ form.password1.label(class="col-sm-2 col-form-label") }}
+        {{ form.password1(class="form-control") }}
       </div>
       <div class="form-group">
-        <label for="password2" class="col-sm-4 col-form-label">Confirmar contraseña</label>
-        <div class="">
-          <input type="password" class="form-control" id="password2" />
-        </div>
+        {{ form.password2.label(class="col-sm-4 col-form-label") }}
+        {{ form.password2(class="form-control") }}
       </div>
 
-      <button class="my-3 btn btn-primary mx-auto d-block">
-        Iniciar Sesion
-      </button>
+
+      {{ form.submit(class="my-3 btn btn-primary mx-auto d-block") }}
     </form>
   </div>
 </div>
