@@ -27,11 +27,32 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
+      {% if user %}
+      <div class="text-center w-100">
+        <span class="text-white text-uppercase"> Bienvenida a nuestra tienda {{user.names}}</span>
+      </div>
+      {% endif %}
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <a class="nav-link active" href="/">Inicio</a>
           </li>
+          {% if not user %}
+          <li class="nav-item">
+            <a class="nav-link active" href="/registro">Registro</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/login">Iniciar Sesion</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link active" href="/carrito">Carrito</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/logout">Salir</a>
+          </li>
+          {% endif %}
+
         </ul>
       </div>
     </div>

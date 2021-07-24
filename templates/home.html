@@ -5,15 +5,27 @@
   <h2 class="text-center py-2">Categorias</h2>
   <div class="categories">
     <a href="/category/Dairy-&-Bakery" class="category">
-      <img class="img-fluid logo" src="/static/img/category/bread.png" alt="" />
+      <img
+        class="img-fluid logo-category"
+        src="/static/img/category/bread.png"
+        alt=""
+      />
       <h3>Dairy & Bakery</h3>
     </a>
     <a href="/category/Snacks-&-Branded-Foods" class="category">
-      <img class="img-fluid logo" src="/static/img/category/snack.png" alt="" />
+      <img
+        class="img-fluid logo-category"
+        src="/static/img/category/snack.png"
+        alt=""
+      />
       <h3>Snacks & Branded</h3>
     </a>
-    <a href="/Staples" class="category">
-      <img class="img-fluid logo" src="/static/img/category/diet.png" alt="" />
+    <a href="/category/Staples" class="category">
+      <img
+        class="img-fluid logo-category"
+        src="/static/img/category/diet.png"
+        alt=""
+      />
       <h3>Staples</h3>
     </a>
   </div>
@@ -24,14 +36,10 @@
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">{{prod['PRODUCT NAME']}}</h4>
-          <p class="card-text text-end">
-            Precio: $ {{prod['PRICE']}}
-          </p>
-          <img
-            class="img-fluid"
-            src={{prod['IMAGE URL']}}
-            alt=""
-          />
+          <p class="card-text text-end">Precio: $ {{prod['PRICE']}}</p>
+          <div class="text-center">
+            <img class="img-fluid" src={{prod['IMAGE URL']}} alt="" />
+          </div>
           <div class="my-2">
             <span class="badge bg-primary">{{prod['CATEGORY']}} </span>
             <span class="badge bg-secondary">{{prod['SUB CATEGORY']}}</span>

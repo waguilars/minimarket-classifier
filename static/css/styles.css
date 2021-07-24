@@ -3,6 +3,15 @@
   height: 50px;
 }
 
+body {
+  height: 100vh;
+}
+
+.logo-category {
+  width: 150px;
+  height: 150px;
+}
+
 .categories {
   display: flex;
   justify-content: space-around;
