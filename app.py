@@ -1,13 +1,14 @@
 from flask import Flask
-from flask import render_template, url_for, flash, request, redirect, Response
+from flask import render_template, url_for, flash, request, redirect, Response, make_response
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from controllers import products
 from controllers.users import User
 
 import sqlite3
+import json
 import os
 
-from forms import LoginForm, RegisterForm
+from forms import FormCarrito, LoginForm, RegisterForm
 
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
@@ -28,6 +29,7 @@ def load_user(user_id):
         return None
     else:
         return User(int(lu[0]), lu[1], lu[2], lu[3])
+
 
 @app.route('/home')
 @app.route('/')
@@ -53,6 +55,57 @@ def category(category_name):
     return render_template('category.html', category=category, sub_category=param, sub_cats=sub_cats, prods=prods)
 
 
+@app.route('/carrito')
+@login_required
+def show_carrito():
+    try:
+        datos = json.loads(request.cookies.get(str(current_user.get_id())))
+    except:
+        datos = []
+    articulos = []
+    cantidades = []
+    total = 0
+    for articulo in datos:
+        prod = products.get_product_by_id(articulo["id"])
+        prod['PRICE'] = str(prod['PRICE']).replace(",", ".")
+        prod['PRICE'] = float(prod['PRICE'])
+        articulos.append(prod)
+        cantidades.append(articulo["cantidad"])
+        total = total + prod['PRICE'] * int(articulo["cantidad"])
+    articulos = zip(articulos, cantidades)
+    return render_template("cart.html", articulos=articulos, total=total, user=current_user.get_data())
+
+
+@app.route('/carrito/add/<int:product_id>', methods=['POST', 'GET'])
+@login_required
+def add_cart(product_id):
+    form = FormCarrito()
+    form.id.data = product_id
+    art = products.get_product_by_id(product_id)
+    stock = int(art['STOCK'])
+
+    if form.validate_on_submit():
+        if stock >= int(form.cantidad.data):
+            try:
+                datos = json.loads(request.cookies.get(str(current_user.get_id())))
+            except:
+                datos = []
+            actualizar = False
+            for dato in datos:
+                if dato["id"] == id:
+                    dato["cantidad"] = form.cantidad.data
+                    actualizar = True
+
+            if not actualizar:
+                datos.append({"id": form.id.data,
+                              "cantidad": form.cantidad.data})
+            resp = make_response(redirect(url_for('index')))
+            resp.set_cookie(str(current_user.get_id()), json.dumps(datos))
+            return resp
+        else:
+            form.cantidad.errors.append("No hay artículos suficientes.")
+    return render_template("cart_add.html", form=form, art=art, user=current_user.get_data())
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -75,7 +128,6 @@ def login():
 
     return render_template('auth/login.html', form=form)
 
-
 @app.route("/logout")
 @login_required
 def logout():
@@ -96,3 +148,4 @@ def registro():
 
 
     return render_template('auth/registro.html', form=form)
+

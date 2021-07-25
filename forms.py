@@ -1,16 +1,17 @@
-from os import PRIO_USER
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.fields.core import IntegerField
+from wtforms.fields.simple import HiddenField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange, ValidationError
 
 from os import path
 
 import sqlite3
 
 
-
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email('Correo no es válido')])
+    email = StringField('Email', validators=[
+                        DataRequired(), Email('Correo no es válido')])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Iniciar sesion')
 
@@ -25,9 +26,11 @@ class LoginForm(FlaskForm):
 
 
 class RegisterForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email('El correo no es válido')])
+    email = StringField('Email', validators=[
+                        DataRequired(), Email('El correo no es válido')])
     names = StringField('Nombres', validators=[DataRequired()])
-    password1 = PasswordField('Contraseña', validators=[DataRequired(), EqualTo('password2', 'Las constraseñas deben ser iguales')])
+    password1 = PasswordField('Contraseña', validators=[DataRequired(), EqualTo(
+        'password2', 'Las constraseñas deben ser iguales')])
     password2 = PasswordField('Confirmar contraseña',
                               validators=[DataRequired()])
     submit = SubmitField('Registrarse')
@@ -40,3 +43,14 @@ class RegisterForm(FlaskForm):
         if valemail is not None:
             raise ValidationError(
                 'Ya existe un usuario con esa direccion de correo. Intente usar otro.')
+
+
+class FormCarrito(FlaskForm):
+    id = HiddenField()
+    cantidad = IntegerField('Cantidad', default=1,
+                            validators=[NumberRange(min=1,
+                                                    message="Debe ser un númer"
+                                                            "o positivo"),
+                                        DataRequired("Tienes que introducir el "
+                                                 "dato")])
+    submit = SubmitField('Aceptar')
