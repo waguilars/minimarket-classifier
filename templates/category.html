@@ -8,20 +8,20 @@
     <ul class="nav nav-pills flex-column">
       <li class="nav-item">
         {% if sub_category == None %}
-        <a class="nav-link active" href="/category/Dairy-&-Bakery">Todos</a>
+        <a class="nav-link active" href={{"/category/"+category}}>Todos</a>
         {% else %}
-        <a class="nav-link" href="/category/Dairy-&-Bakery">Todos</a>
+        <a class="nav-link" href={{"/category/"+category}}>Todos</a>
         {% endif %}
 
       </li>
       {% for cat in sub_cats %}
       <li class="nav-item">
         {% if sub_category == cat %}
-        <a class="nav-link active" href={{"/category/Dairy-&-Bakery?sub="+cat|urlencode}}  >
+        <a class="nav-link active" href={{"/category/"+category+"?sub="+cat|urlencode}}  >
           {{ cat }}
         </a>
         {% else %}
-        <a class="nav-link" href={{"/category/Dairy-&-Bakery?sub="+cat|urlencode}}  >
+        <a class="nav-link" href={{"/category/"+category+"?sub="+cat|urlencode}}  >
           {{ cat }}
         </a>
         {% endif %}
@@ -42,6 +42,7 @@
             <p class="card-text text-end">
               Precio: $ {{prod['PRICE']}}
             </p>
+            <p class="card-text text-end">Stock: {{prod['STOCK']}}</p>
             <img
               class="img-fluid"
               src={{prod['IMAGE URL']}}

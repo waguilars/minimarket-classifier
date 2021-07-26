@@ -52,7 +52,7 @@ def category(category_name):
 
     if current_user.is_authenticated:
         return render_template('category.html', category=category, sub_category=param, sub_cats=sub_cats, prods=prods, user=current_user.get_data())
-    return render_template('category.html', category=category, sub_category=param, sub_cats=sub_cats, prods=prods)
+    return render_template('category.html', category=category_name, sub_category=param, sub_cats=sub_cats, prods=prods)
 
 
 @app.route('/carrito')
@@ -149,3 +149,6 @@ def registro():
 
     return render_template('auth/registro.html', form=form)
 
+@app.route('/nuevo-producto', methods=['POST', 'GET'])
+def new_producto():
+    return render_template('add-producto.html')
