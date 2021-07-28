@@ -1,8 +1,10 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.fields.core import IntegerField
+from wtforms import validators
+from wtforms.fields.core import DecimalField, FloatField, IntegerField, SelectField
+from wtforms.fields import html5
 from wtforms.fields.simple import HiddenField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange, Regexp, URL, ValidationError
 
 from os import path
 
@@ -54,3 +56,14 @@ class FormCarrito(FlaskForm):
                                         DataRequired("Tienes que introducir el "
                                                  "dato")])
     submit = SubmitField('Aceptar')
+
+
+class ProductForm(FlaskForm):
+    id = HiddenField()
+    product_name = StringField('Nombre del producto', validators=[DataRequired()])
+    category = SelectField('Categoria', validators=[DataRequired()])
+    sub_category = SelectField('Sub Categoria', validators=[DataRequired()],)
+    price = html5.DecimalField('Precio', validators=[DataRequired(),NumberRange(min=1, message='Numero no valido')])
+    stock = html5.IntegerField('Stock', validators=[DataRequired(),NumberRange(min=1, message='Numero no valido')])
+    url_imagen = StringField('url de la imagen', validators=[DataRequired(), URL(message='Debe ser una url valida')])
+    submit = SubmitField('Agregar')

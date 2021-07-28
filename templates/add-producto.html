@@ -1,3 +1,114 @@
 {% extends "base.html" %} {% block content %}
 
+<div class="container-fluid mx-auto row justify-content-center">
+  <div class="col-md-6">
+    <h2 class="text-center">Agregar nuevo producto</h2>
+
+    {% with messages = get_flashed_messages()%}
+    {% if messages %}
+    <div class="alert alert-danger mt-3">
+      <i class="fa fa-info me-2"></i>
+        {{ messages|first }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="">
+      {{ form.hidden_tag() }}
+
+      {{ form.product_name.label(class="form-control-label")}}
+        {% if form.product_name.errors %}
+          {{ form.product_name(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+            <span>{{ form.product_name.errors[0] }}</span>
+        </div>
+        {% else %}
+          {{ form.product_name(class="form-control form-control-lg")}}
+        {% endif %}
+
+
+        {{ form.category.label(class="form-control-label")}}
+        {% if form.category.errors %}
+          {{ form.category(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+            <span>{{ form.category.errors[0] }}</span>
+        </div>
+        {% else %}
+          {{ form.category(class="form-control form-control-lg", id="cat")}}
+        {% endif %}
+
+
+        {{ form.sub_category.label(class="form-control-label")}}
+        {% if form.sub_category.errors %}
+          {{ form.sub_category(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+            <span>{{ form.sub_category.errors[0] }}</span>
+        </div>
+        {% else %}
+          {{ form.sub_category(class="form-control form-control-lg", id="sub-cat")}}
+        {% endif %}
+
+
+        {{ form.price.label(class="form-control-label", type="number")}}
+        {% if form.price.errors %}
+          {{ form.price(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+            <span>{{ form.price.errors[0] }}</span>
+        </div>
+        {% else %}
+          {{ form.price(class="form-control form-control-lg")}}
+        {% endif %}
+
+
+        {{ form.stock.label(class="form-control-label")}}
+        {% if form.stock.errors %}
+          {{ form.stock(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+            <span>{{ form.stock.errors[0] }}</span>
+        </div>
+        {% else %}
+          {{ form.stock(class="form-control form-control-lg")}}
+        {% endif %}
+
+
+        {{ form.url_imagen.label(class="form-control-label")}}
+        {% if form.url_imagen.errors %}
+          {{ form.url_imagen(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+            <span>{{ form.url_imagen.errors[0] }}</span>
+        </div>
+        {% else %}
+          {{ form.url_imagen(class="form-control form-control-lg")}}
+        {% endif %}
+
+        {{ form.submit(class="my-3 btn btn-primary mx-auto d-block")}}
+    </form>
+  </div>
+
+</div>
+
+<script>
+  const categories = document.querySelector('#cat')
+  const subCategories = document.querySelector('#sub-cat')
+
+  categories.addEventListener('change', () => {
+    while (subCategories.firstChild) {
+      subCategories.removeChild(subCategories.firstChild)
+    }
+
+    const url = `/data/sub-category/${encodeURI(categories.value)}`
+    fetch(url)
+      .then(resp => resp.json())
+      .then(subs => {
+        subs.forEach(sub => {
+
+          const option = document.createElement('option')
+          option.value = sub
+          option.textContent = sub
+          subCategories.appendChild(option)
+        })
+      })
+  })
+</script>
+
 {% endblock %}

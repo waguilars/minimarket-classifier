@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import render_template, url_for, flash, request, redirect, Response, make_response
+from flask.json import jsonify
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from controllers import products
 from controllers.users import User
@@ -8,11 +9,11 @@ import sqlite3
 import json
 import os
 
-from forms import FormCarrito, LoginForm, RegisterForm
+from forms import FormCarrito, LoginForm, ProductForm, RegisterForm
 
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
-
+products.load_data()
 
 app.config['SECRET_KEY'] = SECRET_KEY
 login_manager = LoginManager(app)
@@ -151,4 +152,25 @@ def registro():
 
 @app.route('/nuevo-producto', methods=['POST', 'GET'])
 def new_producto():
-    return render_template('add-producto.html')
+    form = ProductForm(request.form)
+    categories = products.get_categories()
+    print(categories)
+    if form.category.data is None:
+        sub_categories = products.get_sub_categories(categories[0])
+    else:
+        sub_categories = products.get_sub_categories(form.category.data)
+
+    form.category.choices = [(cat, cat) for cat in categories]
+    form.sub_category.choices = [(sub, sub) for sub in sub_categories]
+
+    if form.validate_on_submit():
+        products.add_new(form.category.data, form.sub_category.data, form.product_name.data, form.price.data, form.stock.data, form.url_imagen.data)
+        return redirect(url_for('index'))
+
+    return render_template('add-producto.html', form=form)
+
+
+@app.route('/data/sub-category/<category_name>')
+def get_sub_categories(category_name):
+    sub_categories = products.get_sub_categories(category_name)
+    return jsonify(sub_categories)
