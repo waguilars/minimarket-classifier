@@ -4,6 +4,7 @@ from flask.json import jsonify
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from controllers import products
 from controllers.users import User
+from utils.clusters import get_clusters
 
 import sqlite3
 import json
@@ -36,6 +37,7 @@ def load_user(user_id):
 @app.route('/')
 def index():
     prods = products.get_last_products()
+    prods = prods[::-1]
     if current_user.is_authenticated:
         return render_template('home.html', prods=prods, user=current_user.get_data())
     return render_template('home.html', prods=prods)
@@ -151,10 +153,14 @@ def registro():
     return render_template('auth/registro.html', form=form)
 
 @app.route('/nuevo-producto', methods=['POST', 'GET'])
+@login_required
 def new_producto():
     form = ProductForm(request.form)
     categories = products.get_categories()
-    print(categories)
+    user = current_user.get_data()
+
+    if user['names'] != 'paty':
+        return redirect(url_for('index'))
     if form.category.data is None:
         sub_categories = products.get_sub_categories(categories[0])
     else:
@@ -166,11 +172,28 @@ def new_producto():
     if form.validate_on_submit():
         products.add_new(form.category.data, form.sub_category.data, form.product_name.data, form.price.data, form.stock.data, form.url_imagen.data)
         return redirect(url_for('index'))
-
-    return render_template('add-producto.html', form=form)
-
+    return render_template('add-producto.html', form=form, user=current_user.get_data())
 
 @app.route('/data/sub-category/<category_name>')
 def get_sub_categories(category_name):
     sub_categories = products.get_sub_categories(category_name)
     return jsonify(sub_categories)
+
+
+@app.route('/clusters')
+def get_products_by_cluster():
+    prods = products.products
+    group = request.args.get('g')
+    if group is None:
+        group = 0
+    else:
+        group = int(group)
+    cluster_labels = get_clusters()
+    prods_by_cluster = []
+    labels = {label for label in cluster_labels}
+    labels = list(labels)
+    cluster_name = ''
+    for idx, label in enumerate(cluster_labels):
+        if label == group:
+            prods_by_cluster.append(prods[idx])
+    return render_template('clusters.html', prods=prods_by_cluster, groups=labels, group=group)

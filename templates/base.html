@@ -37,6 +37,9 @@
           <li class="nav-item">
             <a class="nav-link active" href="/">Inicio</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/clusters">Clusters</a>
+          </li>
           {% if not user %}
           <li class="nav-item">
             <a class="nav-link active" href="/registro">Registro</a>
@@ -45,6 +48,11 @@
             <a class="nav-link active" href="/login">Iniciar Sesion</a>
           </li>
           {% else %}
+          {% if user.names == "paty"%}
+          <li class="nav-item">
+            <a class="nav-link active" href="/nuevo-producto">Agregar</a>
+          </li>
+          {% endif %}
           <li class="nav-item">
             <a class="nav-link active" href="/carrito">Carrito</a>
           </li>
@@ -65,11 +73,9 @@
       <strong>Integrantes:</strong>
     </p>
     <ul class="list-unstyled d-flex justify-content-between">
-      <li>Cabrera Richar</li>
-      <li>Castro Isaac</li>
-      <li>Gómez Patricia</li>
-      <li>Morales Mateo</li>
-      <li>Loja Victoria</li>
+      <li>Isaac Castro </li>
+      <li>Patricia Gómez</li>
+      <li>Mateo Morales</li>
     </ul>
   </footer>
 

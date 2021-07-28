@@ -1,0 +1,66 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container my-5">
+<h2 class="text-center">{{ cluster_name }}</h2>
+
+<div class="row">
+  <div class="col-md-2 my-3">
+    <ul class="nav nav-pills flex-column">
+      {% for label in groups %}
+      <li class="nav-item">
+        {% if group == label %}
+        <a class="nav-link active" href={{"/clusters?g="+label|urlencode}}  >
+          Cluster {{ label }}
+        </a>
+        {% else %}
+        <a class="nav-link" href={{"/clusters?g="+label|urlencode}}  >
+          Cluster {{ label }}
+        </a>
+        {% endif %}
+      </li>
+
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="col">
+    <div class="row">
+      <!-- Render products -->
+      {% for prod in prods %}
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">{{prod['PRODUCT NAME']}}</h4>
+            <p class="card-text text-end">
+              Precio: $ {{prod['PRICE']}}
+            </p>
+            <p class="card-text text-end">Stock: {{prod['STOCK']}}</p>
+            <img
+              class="img-fluid"
+              src={{prod['IMAGE URL']}}
+              alt=""
+            />
+            <div class="my-2">
+              <span class="badge bg-primary">{{prod['CATEGORY']}} </span>
+              <span class="badge bg-secondary">{{prod['SUB CATEGORY']}}</span>
+            </div>
+            <div class="text-center">
+              <a href="#" class="btn btn-sm btn-primary">Ver más</a>
+              <a href={{url_for('add_cart', product_id=prod['ID'])}} class="btn btn-sm btn-primary">
+                <i class="fa fa-plus"></i>
+                Agregar
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+
+{% endblock %}
