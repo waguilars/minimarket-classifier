@@ -4,6 +4,8 @@
   <div class="row">
     <div class="col-md-8">
       <h1 class="text-center my-3">Shopping Cart</h1>
+      <form action="/checkout" method="POST">
+      
       <table class="table table-primary">
         <thead>
           <tr>
@@ -20,6 +22,11 @@
             <td>{{ cantidad }}</td>
             <td>{{ item['PRICE'] }}</td>
             <td>{{ '%0.2f' | format(item['PRICE'] * cantidad) }}</td>
+            <td>
+              <a href={{ '/carrito/delete/'+item['ID'] }}>
+                <i class="fa fa-trash-alt"></i>
+              </a>
+            </td>
           </tr>
           {% endfor %}
           <tr>
@@ -28,6 +35,10 @@
           </tr>
         </tbody>
       </table>
+      {% if total > 0 %}
+        <button class="btn btn-primary">Comprar</button>
+      {% endif %}
+    </form>
     </div>
   </div>
 </div>

@@ -1,3 +1,4 @@
+import datetime
 from flask import Flask
 from flask import render_template, url_for, flash, request, redirect, Response, make_response
 from flask.json import jsonify
@@ -5,6 +6,7 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 from controllers import products
 from controllers.users import User
 from utils.clusters import get_clusters
+from datetime import datetime
 
 import sqlite3
 import json
@@ -95,8 +97,8 @@ def add_cart(product_id):
                 datos = []
             actualizar = False
             for dato in datos:
-                if dato["id"] == id:
-                    dato["cantidad"] = form.cantidad.data
+                if dato["id"] == form.id.data:
+                    dato["cantidad"] = form.cantidad.data + dato["cantidad"]
                     actualizar = True
 
             if not actualizar:
@@ -108,6 +110,21 @@ def add_cart(product_id):
         else:
             form.cantidad.errors.append("No hay artículos suficientes.")
     return render_template("cart_add.html", form=form, art=art, user=current_user.get_data())
+
+@app.route('/carrito/delete/<int:id>')
+def delete_item(id):
+    try:
+        datos = json.loads(request.cookies.get(str(current_user.get_id())))
+    except:
+        datos = []
+
+    for item in datos:
+        if item['id'] == id:
+            datos.remove(item)
+
+    resp = make_response(redirect(url_for('show_carrito')))
+    resp.set_cookie(str(current_user.get_id()), json.dumps(datos))
+    return resp
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -179,6 +196,47 @@ def get_sub_categories(category_name):
     sub_categories = products.get_sub_categories(category_name)
     return jsonify(sub_categories)
 
+
+@app.route('/checkout', methods=['POST'])
+def make_payment():
+    try:
+        datos = json.loads(request.cookies.get(str(current_user.get_id())))
+    except:
+        datos = []
+    if len(datos) == 0:
+        return redirect(url_for('index'))
+
+    date = datetime.now()
+    date = datetime.timestamp(date)
+    total = 0
+    for item in datos:
+        prod = products.get_product_by_id(item['id'])
+        subtotal = prod['PRICE'] * item['cantidad']
+        total += subtotal
+
+    payment = (date, total, int(current_user.get_id()))
+
+    conn = sqlite3.connect('app.db')
+    curs = conn.cursor()
+    curs.execute('insert into payments(date, total, user_id) values(?,?,?);', payment)
+    payment_id = curs.lastrowid
+
+    detail = []
+    for item in datos:
+        subtotal = prod['PRICE'] * item['cantidad']
+        detail.append( (item['id'], item['cantidad'], subtotal, payment_id) )
+
+    curs.executemany('insert into payment_detail(product_id, quantity, sub_total, payment_id) values(?,?,?,?);', detail)
+    conn.commit()
+    datos = []
+    resp = make_response(render_template('thanks.html', user=current_user.get_data()))
+    resp.set_cookie(str(current_user.get_id()), json.dumps(datos))
+    return resp
+
+@app.route('/compras')
+@login_required
+def get_compras():
+    return render_template('compras.html', user= current_user.get_data())
 
 @app.route('/clusters')
 def get_products_by_cluster():

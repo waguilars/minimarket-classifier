@@ -34,29 +34,32 @@
       {% endif %}
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item">
+          <li class="nav-item align-self-center">
             <a class="nav-link active" href="/">Inicio</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item align-self-center">
             <a class="nav-link active" href="/clusters">Clusters</a>
           </li>
           {% if not user %}
-          <li class="nav-item">
+          <li class="nav-item align-self-center">
             <a class="nav-link active" href="/registro">Registro</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item align-self-center">
             <a class="nav-link active" href="/login">Iniciar Sesion</a>
           </li>
           {% else %}
           {% if user.names == "paty"%}
-          <li class="nav-item">
+          <li class="nav-item align-self-center">
             <a class="nav-link active" href="/nuevo-producto">Agregar</a>
           </li>
           {% endif %}
-          <li class="nav-item">
+          <li class="nav-item align-self-center">
             <a class="nav-link active" href="/carrito">Carrito</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item align-self-center text-center">
+            <a class="nav-link active" href="/compras">Mis compras</a>
+          </li>
+          <li class="nav-item align-self-center">
             <a class="nav-link active" href="/logout">Salir</a>
           </li>
           {% endif %}
