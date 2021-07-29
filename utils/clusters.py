@@ -1,10 +1,12 @@
 
 import re, math
+from nltk.tokenize import punkt
 import pandas as pd
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
+from sklearn import cluster
 from sklearn.cluster import AgglomerativeClustering
-
+import pickle
 
 
 #------ NLP -------
@@ -155,7 +157,7 @@ def Sum_Vec(Vec1,Vec2):
   return V_Final
 
 
-def get_clusters():
+def make_clusters():
 
   filename = 'data.csv'
   DataSet = pd.read_csv(filename,sep=';')
@@ -183,4 +185,15 @@ def get_clusters():
   #dendro = hierarchy.dendrogram(dend)
   #plt.show()
 
+  with open('model.pickle', 'wb') as f:
+      pickle.dump(grupos_dhc, f)
+
   return grupos_dhc
+
+def get_clusters():
+  with open('model.pickle', 'rb') as f:
+    clusters = pickle.load(f)
+
+    return clusters
+
+
