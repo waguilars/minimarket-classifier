@@ -1,4 +1,5 @@
 import datetime
+import logging
 from flask import Flask
 from flask import render_template, url_for, flash, request, redirect, Response, make_response
 from flask.json import jsonify
@@ -11,10 +12,17 @@ from datetime import date, datetime, time
 import sqlite3
 import json
 import os
+import sys
+import nltk
 
 from forms import FormCarrito, LoginForm, ProductForm, RegisterForm
 
+
+nltk.download('stopwords')
+
 app = Flask(__name__)
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
 SECRET_KEY = os.urandom(32)
 products.load_data()
 
