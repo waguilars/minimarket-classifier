@@ -182,10 +182,7 @@ def registro():
 def new_producto():
     form = ProductForm(request.form)
     categories = products.get_categories()
-    user = current_user.get_data()
 
-    if user['names'] != 'paty':
-        return redirect(url_for('index'))
     if form.category.data is None:
         sub_categories = products.get_sub_categories(categories[0])
     else:
@@ -287,6 +284,9 @@ def get_products_by_cluster():
     for idx, label in enumerate(cluster_labels):
         if label == group:
             prods_by_cluster.append(prods[idx])
+
+    if current_user.is_authenticated:
+        return render_template('clusters.html', prods=prods_by_cluster, groups=labels, group=group, user=current_user.get_data())
     return render_template('clusters.html', prods=prods_by_cluster, groups=labels, group=group)
 
 @app.template_filter('date')
