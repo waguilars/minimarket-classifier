@@ -216,7 +216,7 @@ def make_payment():
     total = 0
     for item in datos:
         prod = products.get_product_by_id(item['id'])
-        subtotal = prod['PRICE'] * item['cantidad']
+        subtotal = float(prod['PRICE']) * int(item['cantidad'])
         total += subtotal
 
     payment = (date, total, int(current_user.get_id()))
