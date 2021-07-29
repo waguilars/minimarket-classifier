@@ -3,17 +3,35 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      <h1 class="text-center my-3">Shopping Cart</h1>
+      <h1 class="text-center my-3">Mis compras</h1>
 
       <table class="table table-primary">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Detalle</th>
-            <th>Fecha</th>
-            <th>Total</th>
+            <th class="text-center">ID</th>
+            <th class="text-center">Detalle</th>
+            <th class="text-center">Fecha</th>
+            <th class="text-center">Total</th>
           </tr>
         </thead>
+        <tbody>
+          {% for item in detalle %}
+          <tr>
+            <td class="text-center align-middle">
+              {{ item['id'] }}
+            </td>
+            <td>
+              <ul>
+                {% for detalle in item.detalle %}
+                <li> {{ detalle[1]}} x {{ detalle[0]['PRODUCT NAME'] }} </li>
+                {% endfor %}
+              </ul>
+            </td>
+            <td class="text-center align-middle"> {{ item.fecha|date }} </td>
+            <td class="text-center align-middle"> $ {{ item.total }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
       </table>
     </div>
   </div>

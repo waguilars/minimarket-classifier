@@ -6,7 +6,7 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 from controllers import products
 from controllers.users import User
 from utils.clusters import get_clusters
-from datetime import datetime
+from datetime import date, datetime, time
 
 import sqlite3
 import json
@@ -236,7 +236,32 @@ def make_payment():
 @app.route('/compras')
 @login_required
 def get_compras():
-    return render_template('compras.html', user= current_user.get_data())
+    conn = sqlite3.connect('app.db')
+    curs = conn.cursor()
+    user_id = current_user.get_id()
+    curs.execute("SELECT * FROM payments where user_id = (?)", [user_id])
+    compras = list(curs.fetchall())
+    detalle = []
+    for compra in compras:
+        obj = {
+            "id": compra[0],
+            "fecha": compra[1],
+            "total": compra[2]
+        }
+
+        curs.execute("SELECT * FROM payment_detail where payment_id = (?)", [obj['id']])
+        compra_detalle = list(curs.fetchall())
+        detalle_prods = []
+        if len(compra_detalle) > 0:
+            for item in compra_detalle:
+                prod_id = item[1]
+                prod = products.get_product_by_id(prod_id)
+                cantidad = item[2]
+                detalle_prods.append((prod, cantidad))
+        obj['detalle'] = detalle_prods
+        detalle.append(obj)
+
+    return render_template('compras.html', user= current_user.get_data(), detalle=detalle)
 
 @app.route('/clusters')
 def get_products_by_cluster():
@@ -255,3 +280,8 @@ def get_products_by_cluster():
         if label == group:
             prods_by_cluster.append(prods[idx])
     return render_template('clusters.html', prods=prods_by_cluster, groups=labels, group=group)
+
+@app.template_filter('date')
+def timestamp_to_date(ts):
+    date = datetime.fromtimestamp(ts)
+    return date.date()
