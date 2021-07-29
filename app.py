@@ -216,7 +216,8 @@ def make_payment():
     total = 0
     for item in datos:
         prod = products.get_product_by_id(item['id'])
-        price = float(prod['PRICE'].replace(',', '.'))
+        print(prod['PRICE'])
+        price = float(str(prod['PRICE']).replace(',', '.'))
         subtotal = price * int(item['cantidad'])
         total += subtotal
 
