@@ -23,7 +23,7 @@ nltk.download('stopwords')
 app = Flask(__name__)
 app.logger.addHandler(logging.StreamHandler(sys.stdout))
 app.logger.setLevel(logging.ERROR)
-SECRET_KEY = os.urandom(32)
+SECRET_KEY = 'sjdhasjkdhsakjhdkjashdkjhsakdjhsa'
 products.load_data()
 
 app.config['SECRET_KEY'] = SECRET_KEY
